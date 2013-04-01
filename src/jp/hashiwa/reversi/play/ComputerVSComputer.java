@@ -24,14 +24,14 @@ public class ComputerVSComputer {
 
     manager.getFrame().appendToConsole(player1.getClass().getSimpleName() + " VS " + player2.getClass().getSimpleName());
 
-    ExecutorService pool = Executors.newSingleThreadExecutor();
+//    ExecutorService pool = Executors.newSingleThreadExecutor();
 
     for (;;) {
-      if (player1.play(pool).isOver()) break;
-      if (player2.play(pool).isOver()) break;
+      if (player1.play().isOver()) break;
+      if (player2.play().isOver()) break;
     }
 
-    pool.shutdownNow();
+//    pool.shutdownNow();
 
   }
 

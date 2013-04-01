@@ -1,9 +1,8 @@
 package jp.hashiwa.reversi.player;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedList;
 
 import jp.hashiwa.reversi.frame.RCell;
 import jp.hashiwa.reversi.frame.RCell.State;
@@ -12,7 +11,7 @@ import jp.hashiwa.reversi.util.SelectableCells;
 
 public class MinMaxPlayer extends AbstractPlayer {
 
-  public static final int SEARCH_NODE_NUM = 10;
+  public static final int SEARCH_DEPTH = 10;
 
   public static final Evaluator DEFAULT_EVALUATOR = new DefaultEvaluator();
 //  public static final Evaluator DEFAULT_EVALUATOR = new BiasedEvaluator();
@@ -33,9 +32,7 @@ public class MinMaxPlayer extends AbstractPlayer {
 
     RCell[][] orgCells = getCells();
 
-    List<SearchNode> nodes = new ArrayList<SearchNode>();
-    // TreeSet は、重複する要素を削除してしまうため、使用できない。
-//    SortedSet<SearchNode> nodes = new TreeSet<SearchNode>();
+    LinkedList<SearchNode> nodes = new LinkedList<SearchNode>();
 
     // 初期リスト
     for (RCell c: new SelectableCells(orgCells).get(getPlayerState())) {
@@ -45,13 +42,13 @@ public class MinMaxPlayer extends AbstractPlayer {
     // pass
     if (nodes.size() == 0) return null;
 
-    // sort
-    Collections.sort(nodes);
+//    // sort
+//    Collections.sort(nodes);
 
-    for (int cnt=0 ; cnt<SEARCH_NODE_NUM ; cnt++) {
+    for (int cnt=0 ; cnt<SEARCH_DEPTH*nodes.size() ; cnt++) {
 
       // get highest node
-      SearchNode target = nodes.get(nodes.size()-1);
+      SearchNode target = nodes.remove();
 
       // 敵プレイヤーの手
       SearchNode otherNode = othersHand(target);
@@ -61,16 +58,17 @@ public class MinMaxPlayer extends AbstractPlayer {
 
       // target -> otherNode -> playerNode
 
-      nodes.remove(target);
       nodes.add(playerNode);
-      Collections.sort(nodes);
     }
 
     // result
 
+    Collections.sort(nodes);
+    Collections.reverse(nodes);
+
     // this object is instance in simulation
     // need to return real instance on RBoard
-    RCell resultInSimulation = nodes.get(nodes.size()-1).firstCellInSearchResult();
+    RCell resultInSimulation = nodes.remove().firstCellInSearchResult();
     int x = resultInSimulation.getXIndex();
     int y = resultInSimulation.getYIndex();
     RCell result = getCells()[x][y];

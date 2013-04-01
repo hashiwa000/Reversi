@@ -1,8 +1,6 @@
 package jp.hashiwa.reversi.play;
 
 import java.lang.reflect.Constructor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import jp.hashiwa.reversi.event.ReversiEvent;
 import jp.hashiwa.reversi.event.ReversiEventListener;
@@ -17,16 +15,11 @@ public class PlayerVSComputer {
   private static final String PLAYER_CLASS_PREFIX = "jp.hashiwa.reversi.player.";
   private static final Class<? extends AbstractPlayer> DEFAULT_PLAYER_CLASS =
     MinMaxPlayer.class;
+  private static final String COMPUTER_THREAD_NAME = "COMPUTER_NOW_PLAYING";
 
   private static AbstractPlayer computer;
 
-  static {
-    try {
-      Class.forName(DEFAULT_PLAYER_CLASS.getName());
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
-    }
-  }
+  private static boolean clickable = true;
 
   public static void main(String[] args) throws Exception {
     final RManager manager = new RManager();
@@ -34,37 +27,53 @@ public class PlayerVSComputer {
     if (!parseArgumentsAndSetPlayer(args, manager)) System.exit(1);
     manager.getFrame().appendToConsole("Player VS " + computer.getClass().getSimpleName());
 
-    final ExecutorService pool = Executors.newSingleThreadExecutor();
-
     manager.getBoard().addReversiEventListener(new ReversiEventListener() {
 
       @Override
       public void handleEvent(ReversiEvent e) {
 
+        if (!clickable) return;
+
         RCell cell = e.getCell();
 
-        if (manager.getGameState().isOver()) {
-          // game is over
-          return;
+        // game is over
+        if (manager.getGameState().isOver()) return;
 
-        } else if (manager.canAdd(cell)) {
+        // if game is not over and
+        // cell cannot be added,
+        // terminate click operation.
+        //
+        // current player should be able to
+        // click any cell.
+        // (pass should not be occurred.)
+        if (!manager.canAdd()) return;
 
-          // can add piece to the cell
-          GameState gs = manager.addPiece(cell);
+        // can add piece to the cell
+        GameState gs = manager.addPiece(cell);
 
-          if (gs == null) return;
-          if (gs.isOver()) return;
+        if (gs == null) return;
+        if (gs.isOver()) return;
 
-        } else {
+        createNewThreadForComputerPlay(manager);
 
-          // cannot add piece, so pass
-          manager.pass();
-        }
+      }
+    });
+  }
 
-//        if (computer.play(pool).isOver()) return;
+  private static synchronized void createNewThreadForComputerPlay(final RManager manager) {
+    new Thread(COMPUTER_THREAD_NAME){
+
+      @Override
+      public void run() {
+        clickable = false;
+        doIt();
+        clickable = true;
+      }
+
+      private void doIt() {
         while (true) {
           // add piece (computer)
-          if (computer.play(pool).isOver()) return;
+          if (computer.play().isOver()) return;
 
           // if can add piece, turn over (player)
           if (manager.canAdd()) return;
@@ -73,10 +82,8 @@ public class PlayerVSComputer {
           manager.pass();
         }
       }
-    });
 
-    // cannot shutdown here.
-//    pool.shutdownNow();
+    }.start();
   }
 
   private static boolean parseArgumentsAndSetPlayer(String[] args, RManager manager) throws Exception {

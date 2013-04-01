@@ -1,8 +1,5 @@
 package jp.hashiwa.reversi.player;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-
 import jp.hashiwa.reversi.frame.RCell;
 import jp.hashiwa.reversi.frame.RCell.State;
 import jp.hashiwa.reversi.util.GameState;
@@ -22,7 +19,6 @@ public abstract class AbstractPlayer implements Runnable {
   }
 
   private final RManager manager;
-  private CountDownLatch signal;
 
   public AbstractPlayer(RManager manager) {
     this.manager = manager;
@@ -44,25 +40,11 @@ public abstract class AbstractPlayer implements Runnable {
     return manager;
   }
 
-  public GameState play(ExecutorService pool) {
-    signal = new CountDownLatch(1);
-    pool.execute(this);
-    try {
-      signal.await();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
-      pool.shutdownNow();
-    }
-
+  public GameState play() {
+    run();
     return manager.getGameState();
   }
 
-  //  public RCell next() {
-  //    synchronized (manager) {
-  //      return next0();
-  //    }
-  //  }
-  //  public abstract RCell next0();
   public abstract RCell next();
 
   @Override
@@ -76,29 +58,23 @@ public abstract class AbstractPlayer implements Runnable {
 
     synchronized (manager) {
 
-      try {
-
-        RCell c = next();
-        if (c == null) {
-          // pass
-          manager.pass();
-          return;
-        }
-
-        GameState gs = manager.addPiece(c);
-        if (gs == null) {
-          String errMsg = "Error is occurred about Computer: piece is " + c;
-          manager.getFrame().appendToConsole(errMsg);
-          new Exception(errMsg).printStackTrace();
-          return;
-        }
-        if (gs.isOver()) return;
-
-        manager.getBoard().repaint();
-
-      } finally {
-        if (signal != null) signal.countDown();
+      RCell c = next();
+      if (c == null) {
+        // pass
+        manager.pass();
+        return;
       }
+
+      GameState gs = manager.addPiece(c);
+      if (gs == null) {
+        String errMsg = "Error is occurred about Computer: piece is " + c;
+        manager.getFrame().appendToConsole(errMsg);
+        new Exception(errMsg).printStackTrace();
+        return;
+      }
+      if (gs.isOver()) return;
+
+      manager.getBoard().repaint();
 
     }
   }

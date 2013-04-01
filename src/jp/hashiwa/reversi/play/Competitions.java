@@ -1,8 +1,6 @@
 package jp.hashiwa.reversi.play;
 
 import java.lang.reflect.Constructor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import jp.hashiwa.reversi.frame.RCell.State;
 import jp.hashiwa.reversi.player.AbstractPlayer;
@@ -58,7 +56,7 @@ public class Competitions {
   }
 
   static State play(RManager manager, int gameIndex) {
-    ExecutorService pool = Executors.newSingleThreadExecutor();
+//    ExecutorService pool = Executors.newSingleThreadExecutor();
 
     // player setting
     AbstractPlayer player1=null, player2=null;
@@ -79,11 +77,11 @@ public class Competitions {
 
     // play!
     for (;;) {
-      if (player1.play(pool).isOver()) break;
-      if (player2.play(pool).isOver()) break;
+      if (player1.play().isOver()) break;
+      if (player2.play().isOver()) break;
     }
 
-    pool.shutdownNow();
+//    pool.shutdownNow();
 
     return manager.getGameState().winner();
   }
