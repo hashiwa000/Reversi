@@ -18,6 +18,15 @@ public class PlayerVSPlayer {
       @Override
       public synchronized void handleEvent(ReversiEvent e) {
         RCell cell = e.getCell();
+//        if (manager.getGameState().isOver()) {
+//          // game is over
+//          return;
+//        } else if () {
+//
+//        }
+//        manager.addPiece(cell);
+//      }
+        // not implemented yet
         manager.addPiece(cell);
       }
     });

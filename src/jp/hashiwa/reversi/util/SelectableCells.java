@@ -12,31 +12,35 @@ import jp.hashiwa.reversi.frame.RCell.State;
 public class SelectableCells extends HashMap<State, Set<RCell>> {
 
   public SelectableCells(RManager manager) {
+    this(manager.getBoard().getCells());
+  }
+  public SelectableCells(RCell[][] cells) {
     super(2, 1);
     put(State.Black, new HashSet<RCell>());
     put(State.White, new HashSet<RCell>());
 
     List<RCell> list = new ArrayList<RCell>();
 
-    int cellNum = manager.getBoard().getCellNum();
+//    int cellNum = manager.getBoard().getCellNum();
+    int cellNum = cells.length;
 
     for (int i=0 ; i<cellNum ; i++) {
       // 縦方向
       list.clear();
-      update(manager.downCells(i, 0, list));
+      update(RManager.downCells(cells, i, 0, list));
       // 横方向
       list.clear();
-      update(manager.rightCells(0, i, list));
+      update(RManager.rightCells(cells, 0, i, list));
       // 右下斜め方向
       list.clear();
-      update(manager.rightDownCells(i, 0, list));
+      update(RManager.rightDownCells(cells, i, 0, list));
       list.clear();
-      update(manager.rightDownCells(0, i, list));
+      update(RManager.rightDownCells(cells, 0, i, list));
       // 左下斜め方向
       list.clear();
-      update(manager.leftDownCells(i, 0, list));
+      update(RManager.leftDownCells(cells, i, 0, list));
       list.clear();
-      update(manager.leftDownCells(cellNum-1, i, list));
+      update(RManager.leftDownCells(cells, cellNum-1, i, list));
     }
   }
 

@@ -13,6 +13,10 @@ public class RCell {
     this.y = y;
     this.length = length;
   }
+  private RCell(int x, int y, int length, State state) {
+    this(x, y, length);
+    setState(state);
+  }
 
   public void paint(Graphics g) {
     switch (state) {
@@ -60,6 +64,11 @@ public class RCell {
     sb.append(']');
 
     return sb.toString();
+  }
+
+  @Override
+  public RCell clone() {
+    return new RCell(x, y, length, getState());
   }
 
   public enum State {

@@ -10,15 +10,31 @@ public class RFrame extends JFrame {
   public static final String DEFAULT_TITLE = "Reversi";
   public static final int DEFAULT_CELL_NUM = 10;
   public static final int DEFAULT_CELL_LENGTH = 500;
+  private static final String CELL_NUM_SYSPROP = "jp.hashiwa.reversi.cellnum";
+
+  private static int cellNum;
+
+  static {
+    String cellNumStr = System.getProperty(CELL_NUM_SYSPROP, Integer.toString(DEFAULT_CELL_NUM));
+    try {
+      cellNum = Integer.parseInt(cellNumStr);
+    } catch(NumberFormatException e) {
+      throw new Error(CELL_NUM_SYSPROP + " is need to be integer.", e);
+    }
+  }
+
+  public static int getCellNum() {
+    return cellNum;
+  }
 
   private RBoard board;
   private RConsole console;
 
   public RFrame() throws Exception {
-    this(DEFAULT_TITLE, DEFAULT_CELL_LENGTH, DEFAULT_CELL_NUM, true);
+    this(DEFAULT_TITLE, DEFAULT_CELL_LENGTH, cellNum, true);
   }
   public RFrame(boolean visible) throws Exception {
-    this(DEFAULT_TITLE, DEFAULT_CELL_LENGTH, DEFAULT_CELL_NUM, visible);
+    this(DEFAULT_TITLE, DEFAULT_CELL_LENGTH, cellNum, visible);
   }
   public RFrame(String name, int frameLength, int cellNum, boolean visible) throws Exception {
     super(name);

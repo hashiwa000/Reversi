@@ -29,13 +29,14 @@ public class RConsole extends JScrollPane {
   }
 
   void appendTextLine(String line) {
-    sb.setLength(0);
-    sb.append(textArea.getText());
-    sb.append(lineSeparator);
-    sb.append(line);
-    textArea.setText(sb.toString());
-//    textArea.append(lineSeparator);
-//    textArea.append(line);
+//    sb.setLength(0);
+//    sb.append(textArea.getText());
+//    sb.append(lineSeparator);
+//    sb.append(line);
+//    textArea.setText(sb.toString());
+
+    textArea.append(line + lineSeparator);
+    getVerticalScrollBar().setValue(getVerticalScrollBar().getMaximum());
   }
 
   private static JTextArea tmpTextArea;

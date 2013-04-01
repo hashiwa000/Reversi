@@ -6,14 +6,14 @@ import java.util.concurrent.Executors;
 
 import jp.hashiwa.reversi.frame.RCell.State;
 import jp.hashiwa.reversi.player.AbstractPlayer;
-import jp.hashiwa.reversi.player.EdgePreferringPlayerType0;
-import jp.hashiwa.reversi.player.RandomPlayer;
+import jp.hashiwa.reversi.player.BiasedMinMaxPlayer;
+import jp.hashiwa.reversi.player.MinMaxPlayer;
 import jp.hashiwa.reversi.util.RManager;
 
 public class Competitions {
 
-  static Class<? extends AbstractPlayer> p1Class = EdgePreferringPlayerType0.class;
-  static Class<? extends AbstractPlayer> p2Class = RandomPlayer.class;
+  static Class<? extends AbstractPlayer> p1Class = MinMaxPlayer.class;
+  static Class<? extends AbstractPlayer> p2Class = BiasedMinMaxPlayer.class;
 
   /**
    *

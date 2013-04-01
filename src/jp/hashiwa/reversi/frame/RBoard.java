@@ -63,7 +63,7 @@ public class RBoard extends JPanel {
       public void mouseClicked(MouseEvent e) {
         if (processing) return;
 
-        synchronized (this) {
+//        synchronized (this) {
           processing = true;
           try {
             ReversiEvent re = new ReversiEvent(
@@ -78,7 +78,7 @@ public class RBoard extends JPanel {
           } finally {
             processing = false;
           }
-        }
+//        }
 
       }
     });
