@@ -2,5 +2,16 @@ Reversi Game
   auther: hashiwa
   language: Java
 
+Build:
+  compile: JDK 6 or latar
 
+Run:
+  $java jp.hashiwa.reversi.play.PlayerVSComputer [[player1] [player2]]
+    player1, plyer2: プレイヤークラス名
 
+System property:
+  jp.hashiwa.reversi.cellnum         : ゲームボードの縦横のセル数(int)
+  jp.hashiwa.reversi.computerinterval: コンピュータが駒を打つまでの最低時間（秒）(int)
+  jp.hashiwa.reversi.minmax.depth    : MinMax法で探索する深さ(int)
+  jp.hashiwa.reversi.alphabeta.depth : AlphaBeta法で探索する深さ(int)
+  jp.hashiwa.reversi.debug           : デバッグメッセージを出力(boolean)
