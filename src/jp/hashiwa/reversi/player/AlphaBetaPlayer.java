@@ -8,15 +8,21 @@ import jp.hashiwa.reversi.frame.RCell.State;
 import jp.hashiwa.reversi.util.RManager;
 import jp.hashiwa.reversi.util.SelectableCells;
 
-public class MinMaxPlayer extends AbstractPlayer {
-
+/**
+ *
+ * 参考: http://ja.wikipedia.org/wiki/%E3%82%A2%E3%83%AB%E3%83%95%E3%82%A1%E3%83%BB%E3%83%99%E3%83%BC%E3%82%BF%E6%B3%95
+ *
+ * @author Masatoshi
+ *
+ */
+public class AlphaBetaPlayer extends AbstractPlayer {
   private static int searchDepth;
   static {
-    String depthStr = System.getProperty("jp.hashiwa.reversi.minmax.depth", Integer.toString(3));
+    String depthStr = System.getProperty("jp.hashiwa.reversi.alphabeta.depth", Integer.toString(5));
     try {
       searchDepth = Integer.parseInt(depthStr);
     } catch(NumberFormatException e) {
-      throw new Error("jp.hashiwa.reversi.minmax.depth is need to be integer.", e);
+      throw new Error("jp.hashiwa.reversi.alphabeta.depth is need to be integer.", e);
     }
   }
 
@@ -24,10 +30,10 @@ public class MinMaxPlayer extends AbstractPlayer {
 
   protected final Evaluator evaluator;
 
-  public MinMaxPlayer(RManager manager) {
+  public AlphaBetaPlayer(RManager manager) {
     this(manager, DEFAULT_EVALUATOR);
   }
-  public MinMaxPlayer(RManager manager, Evaluator evaluator) {
+  public AlphaBetaPlayer(RManager manager, Evaluator evaluator) {
     super(manager);
     this.evaluator = evaluator;
   }
@@ -69,10 +75,10 @@ public class MinMaxPlayer extends AbstractPlayer {
    * @return 現在手番となっているプレイヤーにとっての評価値
    */
   private double expand(RCell[][] cells, RCell piece, State player, int depth) {
-    // expand() is dummy method
-    return expand0(cloneCells(cells), piece, player, depth);
+    return expand(cells, piece, player, -Integer.MAX_VALUE, Integer.MAX_VALUE, depth);
   }
-  private double expand0(RCell[][] cells, RCell piece, State player, int depth) {
+  private double expand(RCell[][] cells, RCell piece, State player, double alpha, double beta, int depth) {
+    cells = cloneCells(cells);
 
     if (piece != null) {
       int x = piece.getXIndex();
@@ -89,42 +95,49 @@ public class MinMaxPlayer extends AbstractPlayer {
 
       if (selectable.isEmpty()) {
         // pass
-        return expand(cells, null, otherPlayer, depth-1);
+        return expand(cells, null, otherPlayer, alpha, beta, depth-1);
 
       } else {
-        // add piece
-        double maxPoint = 0;
-        if (otherPlayer == getManager().getCurrentState()) {
-          // player's initial point.
-          maxPoint = Integer.MIN_VALUE;
+        // adding success
+        if (otherPlayer == getManager().getCurrentState()){
+          return calcPointOnPlayerTurn(cells, selectable, alpha, beta, depth);
         } else {
-          // enemy's initial point.
-          maxPoint = Integer.MAX_VALUE;
+          return calcPointOnEnemyTurn(cells, selectable, alpha, beta, depth);
         }
-
-        for (RCell c: selectable) {
-          double tmpPoint = expand(cells, c, otherPlayer, depth-1);
-
-          if (otherPlayer == getManager().getCurrentState()) {
-            // player try to maximize player's point.
-            if (maxPoint < tmpPoint) {
-              maxPoint = tmpPoint;
-            }
-          } else {
-            // enemy try to minimize player's point.
-            if (tmpPoint < maxPoint) {
-              maxPoint = tmpPoint;
-            }
-          }
-        }
-
-        return maxPoint;
       }
 
     } else {
       // not expand, terminate search
       return evaluator.evaluate(cells, getManager().getCurrentState()); // white
     }
+  }
+
+  private double calcPointOnEnemyTurn(RCell[][] cells, Set<RCell> selectable, double alpha, double beta, int depth) {
+    State otherPlayer = getManager().getCurrentState().reverse();
+
+    for (RCell c: selectable) {
+
+      double tmpPoint = expand(cells, c, otherPlayer, alpha, beta, depth-1);
+
+      beta = Math.min(beta, tmpPoint);
+      if (beta <= alpha) return alpha;
+    }
+
+    return beta;
+  }
+
+  private double calcPointOnPlayerTurn(RCell[][] cells, Set<RCell> selectable, double alpha, double beta, int depth) {
+    State otherPlayer = getManager().getCurrentState();
+
+    for (RCell c: selectable) {
+
+      double tmpPoint = expand(cells, c, otherPlayer, alpha, beta, depth-1);
+
+      alpha = Math.max(alpha, tmpPoint);
+      if (beta <= alpha) return beta;
+    }
+
+    return alpha;
   }
 
   /**
@@ -196,4 +209,5 @@ public class MinMaxPlayer extends AbstractPlayer {
 
     System.out.println(sb.toString());
   }
+
 }

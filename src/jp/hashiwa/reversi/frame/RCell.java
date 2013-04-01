@@ -23,6 +23,8 @@ public class RCell {
     case None:
       break;
     case White:
+      g.setColor(Color.white);
+      g.fillOval(x, y, length, length);
       g.setColor(Color.black);
       g.drawOval(x, y, length, length);
       break;

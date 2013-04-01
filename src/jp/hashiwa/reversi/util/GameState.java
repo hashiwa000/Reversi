@@ -6,15 +6,11 @@ import jp.hashiwa.reversi.frame.RCell.State;
 public class GameState {
 
   /**
-   * ゲームの勝利者
-   * ゲームが引き分けの場合は null
-   */
-  private final State winner;
-
-  /**
    * ゲームが終わっているかどうか
    */
   private final boolean over;
+
+  private int blackNum, whiteNum;
 
   public GameState(RManager manager) {
     this(manager.getBoard().getCells(), manager.getSelectable());
@@ -22,7 +18,6 @@ public class GameState {
 
   public GameState(RCell[][] cells, SelectableCells selectable) {
 
-    State tmpWinner = null;
     boolean tmpOver = false;
 
     if (selectable.get(State.Black).isEmpty() &&
@@ -32,34 +27,45 @@ public class GameState {
       tmpOver = true;
 
       int cellNum = cells.length;
-      int blackNum = 0;
+//      blackNum = 0; // not necessary.
+//      whiteNum = 0; // not necessary.
 
       for (int i=0 ; i<cellNum ; i++) {
         for (int j=0 ; j<cellNum ; j++) {
           State s = cells[i][j].getState();
 
           if      (s == State.Black) blackNum++;
-          else if (s == State.White) blackNum--;
+          else if (s == State.White) whiteNum++;
 
         }
       }
-
-      if (0 < blackNum) {
-        tmpWinner = State.Black;
-      } else if (blackNum < 0) {
-        tmpWinner = State.White;
-      }
     }
 
-    winner = tmpWinner;
     over = tmpOver;
-
   }
 
   public boolean isOver() {
     return over;
   }
   public State winner() {
-    return winner;
+    if (blackNum == whiteNum) return null;
+    if (blackNum < whiteNum)  return State.White;
+    return State.Black;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    if (isOver()) {
+      sb.append("Game is over! Winner is ");
+      sb.append(winner()).append(':');
+    } else {
+      sb.append("Now playing.:");
+    }
+
+    sb.append(blackNum).append("(Black)").append('-');
+    sb.append(whiteNum).append("(White)");
+
+    return sb.toString();
   }
 }

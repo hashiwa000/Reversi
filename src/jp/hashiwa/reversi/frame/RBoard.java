@@ -26,6 +26,8 @@ public class RBoard extends JPanel {
   private final List<ReversiEventListener> listeners =
     new ArrayList<ReversiEventListener>();
 
+  private RCell lastAdded = null;
+
   /**
    * ボードを作成する。
    * @param cellLength 一つのセルの縦、横の長さ
@@ -62,24 +64,21 @@ public class RBoard extends JPanel {
       @Override
       public void mouseClicked(MouseEvent e) {
         if (processing) return;
+        processing = true;
 
-//        synchronized (this) {
-          processing = true;
-          try {
-            ReversiEvent re = new ReversiEvent(
-                board,
-                e.getX()/cellLength,
-                e.getY()/cellLength);
+        try {
+          ReversiEvent re = new ReversiEvent(
+              board,
+              e.getX()/cellLength,
+              e.getY()/cellLength);
 
-            for (ReversiEventListener listener: listeners) {
-              listener.handleEvent(re);
-              board.repaint();
-            }
-          } finally {
-            processing = false;
+          for (ReversiEventListener listener: listeners) {
+            listener.handleEvent(re);
+            board.repaint();
           }
-//        }
-
+        } finally {
+          processing = false;
+        }
       }
     });
 
@@ -107,6 +106,15 @@ public class RBoard extends JPanel {
   public void paint(Graphics g) {
     super.paint(g);
 
+    if (lastAdded != null) {
+      g.setColor(Color.pink);
+      g.fillRect(lastAdded.getX(), lastAdded.getY(), lastAdded.getLength(), lastAdded.getLength());
+    }
+
+    for (int i=0 ; i<cells.length ; i++)
+      for (int j=0 ; j<cells[i].length ; j++)
+        cells[i][j].paint(g);
+
     g.setColor(Color.black);
 
     // vertical
@@ -126,10 +134,6 @@ public class RBoard extends JPanel {
           cellLength*cellNum,
           cellLength*i);
     }
-
-    for (int i=0 ; i<cells.length ; i++)
-      for (int j=0 ; j<cells[i].length ; j++)
-        cells[i][j].paint(g);
 
   }
 
@@ -159,6 +163,10 @@ public class RBoard extends JPanel {
       return null;
     }
     return cells[x][y];
+  }
+
+  public void setLastAddedCell(RCell cell) {
+    this.lastAdded = cell;
   }
 
   /**

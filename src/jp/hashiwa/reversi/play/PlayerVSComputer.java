@@ -6,7 +6,7 @@ import jp.hashiwa.reversi.event.ReversiEvent;
 import jp.hashiwa.reversi.event.ReversiEventListener;
 import jp.hashiwa.reversi.frame.RCell;
 import jp.hashiwa.reversi.player.AbstractPlayer;
-import jp.hashiwa.reversi.player.MinMaxPlayer;
+import jp.hashiwa.reversi.player.AlphaBetaPlayer;
 import jp.hashiwa.reversi.util.GameState;
 import jp.hashiwa.reversi.util.RManager;
 
@@ -14,7 +14,7 @@ public class PlayerVSComputer {
 
   private static final String PLAYER_CLASS_PREFIX = "jp.hashiwa.reversi.player.";
   private static final Class<? extends AbstractPlayer> DEFAULT_PLAYER_CLASS =
-    MinMaxPlayer.class;
+    AlphaBetaPlayer.class;
   private static final String COMPUTER_THREAD_NAME = "COMPUTER_NOW_PLAYING";
 
   private static AbstractPlayer computer;
@@ -72,6 +72,9 @@ public class PlayerVSComputer {
 
       private void doIt() {
         while (true) {
+
+//          if (manager.getGameState().isOver()) return;
+
           // add piece (computer)
           if (computer.play().isOver()) return;
 

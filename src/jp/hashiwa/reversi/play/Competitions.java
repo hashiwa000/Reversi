@@ -4,14 +4,17 @@ import java.lang.reflect.Constructor;
 
 import jp.hashiwa.reversi.frame.RCell.State;
 import jp.hashiwa.reversi.player.AbstractPlayer;
-import jp.hashiwa.reversi.player.BiasedMinMaxPlayer;
-import jp.hashiwa.reversi.player.MinMaxPlayer;
+import jp.hashiwa.reversi.player.BiasedABPlayer;
+import jp.hashiwa.reversi.player.BiasedMMPlayer;
 import jp.hashiwa.reversi.util.RManager;
 
 public class Competitions {
 
-  static Class<? extends AbstractPlayer> p1Class = MinMaxPlayer.class;
-  static Class<? extends AbstractPlayer> p2Class = BiasedMinMaxPlayer.class;
+  static Class<? extends AbstractPlayer> p1Class = BiasedMMPlayer.class;
+  static Class<? extends AbstractPlayer> p2Class = BiasedABPlayer.class;
+//  static Class<? extends AbstractPlayer> p2Class = BiasedMinMaxPlayer.class;
+
+  private static final boolean SHOW_PROGRESS = true;
 
   /**
    *
@@ -21,13 +24,22 @@ public class Competitions {
     // interval <- 0 msec
     AbstractPlayer.setInterval(0);
 
-    int gameNum = 100;
+    int gameNum = 10;
     int p1WinNum = 0;
     int p2WinNum = 0;
 
     try {
       if (args.length == 1) gameNum = Integer.parseInt(args[0]);
-    } catch(NumberFormatException e) {}
+    } catch(NumberFormatException e) {
+      e.printStackTrace();
+      System.exit(1);
+    }
+
+    if (SHOW_PROGRESS) {
+      System.out.println(p1Class.getSimpleName() + " VS " + p2Class.getSimpleName());
+      System.out.println("start[          ]finish");
+      System.out.print  ("     [");
+    }
 
     for (int i=0 ; i<gameNum ; i++) {
       final RManager manager = new RManager(false);
@@ -47,6 +59,16 @@ public class Competitions {
           p1WinNum++;
         }
       }
+
+      if (SHOW_PROGRESS) {
+        if (i%(gameNum/10)==0) {
+          System.out.print('#');
+        }
+      }
+    }
+
+    if (SHOW_PROGRESS) {
+      System.out.println("] --> finish!");
     }
 
     System.out.println(p1Class.getSimpleName() + ": " + p1WinNum + "(" + (100*p1WinNum/gameNum) + "%)");

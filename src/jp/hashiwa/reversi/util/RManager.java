@@ -19,7 +19,6 @@ public class RManager {
   // ----------- fields -----------
 
   private RFrame frame;
-//  private Map<State, Set<ReversiCell>> selectable = null;
   private SelectableCells selectable = null;
   private GameState gameState = null;
   private State currentState = INITIAL_STATE;
@@ -112,7 +111,7 @@ public class RManager {
     // ゲーム状態の確認
     GameState gs = getGameState();
     if (gs.isOver()) {
-      appendToConsole("Game is over! Winner is " + gs.winner());
+      appendToConsole(gs.toString());
       setBoardColor(Color.gray);
       return null;
     }
@@ -132,11 +131,13 @@ public class RManager {
 
     clearSelectable();
     clearGameState();
+    getBoard().setLastAddedCell(piece);
 
     // ---- 駒を置いた後の確認 ----
     gs = getGameState();
     if (gs.isOver()) {
-      appendToConsole("Game is over! Winner is " + gs.winner());
+      appendToConsole(gs.toString());
+      setBoardColor(Color.gray);
     }
 
     if (DEBUG) {
@@ -158,11 +159,6 @@ public class RManager {
         }
         System.out.println();
       }
-    }
-
-    if (gs.isOver()) {
-      appendToConsole("Game is over! Winner is " + gs.winner());
-      setBoardColor(Color.gray);
     }
 
     return gs;
