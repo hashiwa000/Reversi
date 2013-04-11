@@ -1,11 +1,10 @@
 package jp.hashiwa.reversi.play;
 
-import java.lang.reflect.Constructor;
-
 import jp.hashiwa.reversi.frame.RCell.State;
 import jp.hashiwa.reversi.player.AbstractPlayer;
 import jp.hashiwa.reversi.player.BiasedABPlayer;
 import jp.hashiwa.reversi.player.BiasedMMPlayer;
+import jp.hashiwa.reversi.player.PlayerProvider;
 import jp.hashiwa.reversi.util.RManager;
 
 public class Competitions {
@@ -78,23 +77,17 @@ public class Competitions {
   }
 
   static State play(RManager manager, int gameIndex) {
-//    ExecutorService pool = Executors.newSingleThreadExecutor();
+    PlayerProvider provider = new PlayerProvider(manager);
 
     // player setting
     AbstractPlayer player1=null, player2=null;
-    try {
-      Constructor con1 = p1Class.getConstructor(new Class[]{RManager.class});
-      Constructor con2 = p2Class.getConstructor(new Class[]{RManager.class});
 
-      if (gameIndex%2==0) {
-        player1 = (AbstractPlayer)con1.newInstance(manager);
-        player2 = (AbstractPlayer)con2.newInstance(manager);
-      } else {
-        player1 = (AbstractPlayer)con2.newInstance(manager);
-        player2 = (AbstractPlayer)con1.newInstance(manager);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
+    if (gameIndex%2==0) {
+      player1 = provider.getPlayer(p1Class);
+      player2 = provider.getPlayer(p2Class);
+    } else {
+      player1 = provider.getPlayer(p2Class);
+      player2 = provider.getPlayer(p1Class);
     }
 
     // play!
@@ -102,8 +95,6 @@ public class Competitions {
       if (player1.play().isOver()) break;
       if (player2.play().isOver()) break;
     }
-
-//    pool.shutdownNow();
 
     return manager.getGameState().winner();
   }

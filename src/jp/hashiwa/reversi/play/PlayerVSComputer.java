@@ -1,18 +1,16 @@
 package jp.hashiwa.reversi.play;
 
-import java.lang.reflect.Constructor;
-
 import jp.hashiwa.reversi.event.ReversiEvent;
 import jp.hashiwa.reversi.event.ReversiEventListener;
 import jp.hashiwa.reversi.frame.RCell;
 import jp.hashiwa.reversi.player.AbstractPlayer;
 import jp.hashiwa.reversi.player.AlphaBetaPlayer;
+import jp.hashiwa.reversi.player.PlayerProvider;
 import jp.hashiwa.reversi.util.GameState;
 import jp.hashiwa.reversi.util.RManager;
 
 public class PlayerVSComputer {
 
-  private static final String PLAYER_CLASS_PREFIX = "jp.hashiwa.reversi.player.";
   private static final Class<? extends AbstractPlayer> DEFAULT_PLAYER_CLASS =
     AlphaBetaPlayer.class;
   private static final String COMPUTER_THREAD_NAME = "COMPUTER_NOW_PLAYING";
@@ -90,33 +88,15 @@ public class PlayerVSComputer {
   }
 
   private static boolean parseArgumentsAndSetPlayer(String[] args, RManager manager) throws Exception {
-    if (args.length != 1) {
-      Constructor con = DEFAULT_PLAYER_CLASS.getConstructor(new Class[]{RManager.class});
-      computer = (AbstractPlayer)con.newInstance(manager);
-      return true;
+    PlayerProvider provider = new PlayerProvider(manager);
+
+    if (args.length == 1) {
+      computer = provider.getPlayer(args[0]);
+      if (computer != null) return true;
     }
 
-    String p1ClassName = PLAYER_CLASS_PREFIX + args[0];
-
-    try {
-      Class<? extends AbstractPlayer> p1Class = (Class<? extends AbstractPlayer>) Class.forName(p1ClassName);
-      Constructor con1 = p1Class.getConstructor(new Class[]{RManager.class});
-      computer = (AbstractPlayer)con1.newInstance(manager);
-
-      return true;
-    } catch (ClassNotFoundException e) {
-      // use default player
-      Constructor con = DEFAULT_PLAYER_CLASS.getConstructor(new Class[]{RManager.class});
-      computer = (AbstractPlayer)con.newInstance(manager);
-
-
-      manager.getFrame().appendToConsole("Class is not found. Use default player.");
-
-      return true;
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
+    computer = provider.getPlayer(DEFAULT_PLAYER_CLASS);
+    if (computer != null) return true;
     return false;
   }
 
