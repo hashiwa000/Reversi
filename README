@@ -4,14 +4,16 @@ Reversi Game
 
 Build:
   compile: JDK 6 or latar
+  $ sh ./build.sh 
 
 Run:
-  $java jp.hashiwa.reversi.play.PlayerVSComputer [[player1] [player2]]
-    player1, plyer2: ƒvƒŒƒCƒ„[ƒNƒ‰ƒX–¼
+  $ java jp.hashiwa.reversi.play.PlayerVSComputer [[player1] [player2]]
+    player1, plyer2: ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚¯ãƒ©ã‚¹å
 
 System property:
-  jp.hashiwa.reversi.cellnum         : ƒQ[ƒ€ƒ{[ƒh‚Ìc‰¡‚ÌƒZƒ‹”(int)
-  jp.hashiwa.reversi.computerinterval: ƒRƒ“ƒsƒ…[ƒ^‚ª‹î‚ğ‘Å‚Â‚Ü‚Å‚ÌÅ’áŠÔi•bj(int)
-  jp.hashiwa.reversi.minmax.depth    : MinMax–@‚Å’Tõ‚·‚é[‚³(int)
-  jp.hashiwa.reversi.alphabeta.depth : AlphaBeta–@‚Å’Tõ‚·‚é[‚³(int)
-  jp.hashiwa.reversi.debug           : ƒfƒoƒbƒOƒƒbƒZ[ƒW‚ğo—Í(boolean)
+  jp.hashiwa.reversi.cellnum         : ã‚²ãƒ¼ãƒ ãƒœãƒ¼ãƒ‰ã®ç¸¦æ¨ªã®ã‚»ãƒ«æ•°(int)
+  jp.hashiwa.reversi.computerinterval: ã‚³ãƒ³ãƒ”ãƒ¥ãƒ¼ã‚¿ãŒé§’ã‚’æ‰“ã¤ã¾ã§ã®æœ€ä½æ™‚é–“ï¼ˆç§’ï¼‰(int)
+  jp.hashiwa.reversi.minmax.depth    : MinMaxæ³•ã§æ¢ç´¢ã™ã‚‹æ·±ã•(int)
+  jp.hashiwa.reversi.alphabeta.depth : AlphaBetaæ³•ã§æ¢ç´¢ã™ã‚‹æ·±ã•(int)
+  jp.hashiwa.reversi.debug           : ãƒ‡ãƒãƒƒã‚°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡ºåŠ›(boolean)
+
