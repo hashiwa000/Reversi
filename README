@@ -1,19 +1,39 @@
 Reversi Game
-  auther: hashiwa
+  author: hashiwa
   language: Java
 
 Build:
-  compile: JDK 6 or latar
+  compile: JDK 6 or later
   $ sh ./build.sh 
 
 Run:
-  $ java jp.hashiwa.reversi.play.PlayerVSComputer [[player1] [player2]]
-    player1, plyer2: プレイヤークラス名
+Available game modes:
+1. Player vs Computer:
+  $ java jp.hashiwa.reversi.play.PlayerVSComputer [computer_player_class]
+    computer_player_class: 使用するコンピュータプレイヤークラス名（省略可）
+  
+2. Player vs Player:
+  $ java jp.hashiwa.reversi.play.PlayerVSPlayer
 
-System property:
+3. Computer vs Computer:
+  $ java jp.hashiwa.reversi.play.ComputerVSComputer [player1_class] [player2_class]
+
+Available player classes:
+- AlphaBetaPlayer (PlayerVSComputerのデフォルト)
+- BiasedABPlayer 
+- BiasedMMPlayer
+- BiasedSimpleMMPlayer
+- EdgePreferringPlayerType0
+- EdgePreferringPlayerType1
+- EdgePrefferingPlayer
+- MinMaxPlayer
+- RandomPlayer
+- RationalPlayer
+- SimpleMinMaxPlayer
+
+System properties:
   jp.hashiwa.reversi.cellnum         : ゲームボードの縦横のセル数(int)
   jp.hashiwa.reversi.computerinterval: コンピュータが駒を打つまでの最低時間（秒）(int)
   jp.hashiwa.reversi.minmax.depth    : MinMax法で探索する深さ(int)
   jp.hashiwa.reversi.alphabeta.depth : AlphaBeta法で探索する深さ(int)
   jp.hashiwa.reversi.debug           : デバッグメッセージを出力(boolean)
-
