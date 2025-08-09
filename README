@@ -3,20 +3,25 @@ Reversi Game
   language: Java
 
 Build:
-  compile: JDK 6 or later
-  $ sh ./build.sh 
+  compile: JDK 8 or later
+  $ mvn clean package
 
 Run:
-Available game modes:
+Available game modes (after building with 'mvn clean package'):
+
 1. Player vs Computer:
-  $ java jp.hashiwa.reversi.play.PlayerVSComputer [computer_player_class]
+  $ mvn exec:java -Dexec.mainClass="jp.hashiwa.reversi.play.PlayerVSComputer" -Dexec.args="[computer_player_class]"
     computer_player_class: 使用するコンピュータプレイヤークラス名（省略可）
   
 2. Player vs Player:
-  $ java jp.hashiwa.reversi.play.PlayerVSPlayer
+  $ mvn exec:java -Dexec.mainClass="jp.hashiwa.reversi.play.PlayerVSPlayer"
 
 3. Computer vs Computer:
-  $ java jp.hashiwa.reversi.play.ComputerVSComputer [player1_class] [player2_class]
+  $ mvn exec:java -Dexec.mainClass="jp.hashiwa.reversi.play.ComputerVSComputer" -Dexec.args="[player1_class] [player2_class]"
+
+Or build jar and run:
+  $ mvn clean package
+  $ java -cp target/reversi-1.0-SNAPSHOT.jar jp.hashiwa.reversi.play.PlayerVSComputer
 
 Available player classes:
 - AlphaBetaPlayer (PlayerVSComputerのデフォルト)
