@@ -8,12 +8,12 @@ public class RCell {
   private State state = State.None;
   private final int x, y, length;
 
-  RCell(int x, int y, int length) {
+  public RCell(int x, int y, int length) {
     this.x = x;
     this.y = y;
     this.length = length;
   }
-  private RCell(int x, int y, int length, State state) {
+  public RCell(int x, int y, int length, State state) {
     this(x, y, length);
     setState(state);
   }

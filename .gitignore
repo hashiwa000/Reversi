@@ -1,1 +1,9 @@
 classes/
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.tmp
+*.swp

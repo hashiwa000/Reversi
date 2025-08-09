@@ -33,7 +33,7 @@ public class RBoard extends JPanel {
    * @param cellLength 一つのセルの縦、横の長さ
    * @param cellNum ボードの縦、横のセル数
    */
-  RBoard(final int cellLength, final int cellNum) {
+  public RBoard(final int cellLength, final int cellNum) {
     this.cells = new RCell[cellNum][cellNum];
     this.cellLength = cellLength;
     this.cellNum = cellNum;
@@ -96,10 +96,10 @@ public class RBoard extends JPanel {
     }
 
     final int half = cellNum/2;
-    cells[half-1][half-1].setState(State.White);
-    cells[half  ][half-1].setState(State.Black);
-    cells[half-1][half  ].setState(State.Black);
-    cells[half  ][half  ].setState(State.White);
+    cells[half-1][half-1].setState(State.Black);
+    cells[half  ][half-1].setState(State.White);
+    cells[half-1][half  ].setState(State.White);
+    cells[half  ][half  ].setState(State.Black);
   }
 
   @Override
